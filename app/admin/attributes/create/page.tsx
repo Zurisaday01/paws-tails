@@ -9,7 +9,7 @@ const CreateAttributePage = async () => {
 	return (
 		<PageContainer scrollable>
 			<div className='flex-1 space-y-4'>
-				<AttributeInsertForm pageTitle='Create Attribute' />
+				<AttributeInsertForm pageTitle='Create Attribute' type='Create' />
 			</div>
 		</PageContainer>
 	);

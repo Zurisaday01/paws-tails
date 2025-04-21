@@ -7,7 +7,6 @@ import {
 	ResponsiveContainer,
 	PieChart,
 	Pie,
-	Legend,
 	Tooltip,
 } from 'recharts';
 

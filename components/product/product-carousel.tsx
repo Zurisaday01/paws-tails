@@ -8,10 +8,10 @@ import {
 	CarouselPrevious,
 } from '@/components/ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
-import Link from 'next/link';
-import Image from 'next/image';
+
 
 const ProductCarousel = ({ data }: { data: Product[] }) => {
+	console.log('ProductCarousel', data);
 	return (
 		<Carousel
 			className='w-full mb-12'

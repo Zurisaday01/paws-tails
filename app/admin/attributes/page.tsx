@@ -59,7 +59,7 @@ const AttributesPage = async (props: {
 					key={''}
 					fallback={<DataTableSkeleton columnCount={4} rowCount={10} />}>
 					<>
-						<DataTable columns={columns} data={data} />
+						<DataTable columns={columns} data={data as Attribute[]} />
 
 						{totalPages > 1 && (
 							<Pagination page={page} totalPages={totalPages} />

@@ -25,7 +25,7 @@ const UpdateAttributePage = async (props: {
 				<AttributeInsertForm
 					pageTitle='Update Attribute'
                     type='Update'
-					initialData={attribute}
+					initialData={attribute as Attribute}
 				/>
 			</div>
 		</PageContainer>

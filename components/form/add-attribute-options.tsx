@@ -8,7 +8,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form';
-import { useFieldArray, UseFormRegister, useWatch } from 'react-hook-form';
+import { useFieldArray, useWatch } from 'react-hook-form';
 import {
 	Select,
 	SelectContent,
@@ -21,7 +21,6 @@ import { structureMultiselectOptions } from '@/lib/utils';
 import {
 	attributeValuesSchema
 } from '@/lib/validators';
-import { z } from 'zod';
 
 interface AddAttributeValuesProps {
 	name: string; // The name of the field array (e.g., "values")

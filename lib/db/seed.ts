@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { usersSampleData } from './sample-data';
-import { hash } from '@/lib/encrypt';
+// import { usersSampleData } from './sample-data';
+// import { hash } from '@/lib/encrypt';
 
 async function main() {
 	const prisma = new PrismaClient();
