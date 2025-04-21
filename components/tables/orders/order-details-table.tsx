@@ -16,13 +16,6 @@ import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import { useTransition } from 'react';
 import {
-	PayPalButtons,
-	PayPalScriptProvider,
-	usePayPalScriptReducer,
-} from '@paypal/react-paypal-js';
-import {
-	createPayPalOrder,
-	approvePayPalOrder,
 	updateOrderToPaidCOD,
 	deliverOrder,
 } from '@/lib/actions/order.actions';
@@ -31,12 +24,10 @@ import ProductPrice from '@/components/product/product-price';
 
 const OrderDetailsTable = ({
 	order,
-	paypalClientId,
 	isAdmin,
 	stripeClientSecret,
 }: {
 	order: Omit<Order, 'paymentResult'>;
-	paypalClientId: string;
 	isAdmin: boolean;
 	stripeClientSecret: string | null;
 }) => {
@@ -55,41 +46,6 @@ const OrderDetailsTable = ({
 		deliveredAt,
 	} = order;
 
-	const { toast } = useToast();
-
-	const PrintLoadingState = () => {
-		const [{ isPending, isRejected }] = usePayPalScriptReducer();
-		let status = '';
-
-		if (isPending) {
-			status = 'Loading PayPal...';
-		} else if (isRejected) {
-			status = 'Error Loading PayPal';
-		}
-		return status;
-	};
-
-	const handleCreatePayPalOrder = async () => {
-		const res = await createPayPalOrder(order.id);
-
-		if (!res.success) {
-			toast({
-				variant: 'destructive',
-				description: res.message,
-			});
-		}
-
-		return res.data;
-	};
-
-	const handleApprovePayPalOrder = async (data: { orderID: string }) => {
-		const res = await approvePayPalOrder(order.id, data);
-
-		toast({
-			variant: res.success ? 'default' : 'destructive',
-			description: res.message,
-		});
-	};
 
 	// Button to mark order as paid
 	const MarkAsPaidButton = () => {
@@ -217,7 +173,7 @@ const OrderDetailsTable = ({
 				<div>
 					<Card className='border-none shadow-none'>
 						<CardContent className='p-4 gap-4 space-y-4'>
-							<div className='flex justify-between'>
+							<div className='flex gap-8 justify-between'>
 								<div>Items</div>
 								<div>{formatCurrency(itemsPrice)}</div>
 							</div>
@@ -225,11 +181,11 @@ const OrderDetailsTable = ({
 								<div>Tax</div>
 								<div>{formatCurrency(taxPrice)}</div>
 							</div>
-							<div className='flex justify-between'>
+							<div className='flex gap-8 justify-between'>
 								<div>Shipping</div>
 								<div>{formatCurrency(shippingPrice)}</div>
 							</div>
-							<div className='flex justify-between'>
+							<div className='flex gap-8 justify-between'>
 								<div>Total</div>
 								<div>
 									<ProductPrice
@@ -239,18 +195,6 @@ const OrderDetailsTable = ({
 								</div>
 							</div>
 
-							{/* PayPal Payment */}
-							{!isPaid && paymentMethod === 'PayPal' && (
-								<div>
-									<PayPalScriptProvider options={{ clientId: paypalClientId }}>
-										<PrintLoadingState />
-										<PayPalButtons
-											createOrder={handleCreatePayPalOrder}
-											onApprove={handleApprovePayPalOrder}
-										/>
-									</PayPalScriptProvider>
-								</div>
-							)}
 
 							{/* Stripe Payment */}
 							{!isPaid && paymentMethod === 'Stripe' && stripeClientSecret && (

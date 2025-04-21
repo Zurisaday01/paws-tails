@@ -112,21 +112,21 @@ const PlaceOrderPage = async () => {
 					</Card>
 				</div>
 				<div>
-					<Card className='border-none shadow-none'>
+					<Card className='border-none shadow-none '>
 						<CardContent className='p-4 gap-4 space-y-4'>
-							<div className='flex justify-between'>
+							<div className='flex gap-8 justify-between'>
 								<div>Items</div>
 								<div>{formatCurrency(cart.itemsPrice)}</div>
 							</div>
-							<div className='flex justify-between'>
+							<div className='flex gap-8 justify-between'>
 								<div>Tax</div>
 								<div>{formatCurrency(cart.taxPrice)}</div>
 							</div>
-							<div className='flex justify-between'>
+							<div className='flex gap-8 justify-between'>
 								<div>Shipping</div>
 								<div>{formatCurrency(cart.shippingPrice)}</div>
 							</div>
-							<div className='flex justify-between'>
+							<div className='flex gap-8 justify-between'>
 								<div>Total</div>
 
 								<ProductPrice

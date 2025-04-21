@@ -43,7 +43,6 @@ const AdminOrderPage = async (props: {
 						shippingAddress: order.shippingAddress as ShippingAddress,
 					}}
 					stripeClientSecret={client_secret}
-					paypalClientId={process.env.PAYPAL_CLIENT_ID || 'sb'}
 					isAdmin={true}
 				/>
 			</div>

@@ -11,9 +11,9 @@ const BrandLogo = () => {
 				className='w-[80px]'
 			/>
 			<div className='text-xl md:text-2xl font-bold text-center'>
-				<span className='text-brown-100'>Paws</span>{' '}
+				<span className='text-brown-100 dark:text-yellow-700'>Paws</span>{' '}
 				<span className='text-brown-50'>&</span>{' '}
-				<span className='text-brown-200'>Tails</span>
+				<span className='text-brown-200 dark:text-white'>Tails</span>
 			</div>
 		</div>
 	);
