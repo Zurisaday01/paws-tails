@@ -14,22 +14,24 @@ export async function POST(req: NextRequest) {
 
 	// Check for successful payment
 	if (event.type === 'charge.succeeded') {
-		const { object } = event.data;
+		try {
+			const charge = event.data.object as Stripe.Charge;
 
-		// Update order status
-		await updateOrderToPaid({
-			orderId: object.metadata.orderId,
-			paymentResult: {
-				id: object.id,
-				status: 'COMPLETED',
-				email_address: object.billing_details.email!,
-				pricePaid: (object.amount / 100).toFixed(),
-			},
-		});
+			await updateOrderToPaid({
+				orderId: charge.metadata.orderId,
+				paymentResult: {
+					id: charge.id,
+					status: 'COMPLETED',
+					email_address: charge.billing_details.email!,
+					pricePaid: (charge.amount / 100).toFixed(),
+				},
+			});
 
-		return NextResponse.json({
-			message: 'updateOrderToPaid was successful',
-		});
+			return NextResponse.json({ message: 'updateOrderToPaid was successful' });
+		} catch (err) {
+			console.error('updateOrderToPaid error:', err);
+			return new NextResponse('Webhook handler failed', { status: 500 });
+		}
 	}
 
 	return NextResponse.json({
