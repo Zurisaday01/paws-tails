@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import type { NextAuthConfig } from 'next-auth';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { prisma } from '@/lib/db/prisma';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { compare } from './lib/encrypt';
 import { cookies } from 'next/headers';
+
 
 export const authConfig = {
 	pages: {

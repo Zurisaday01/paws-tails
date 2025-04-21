@@ -11,6 +11,7 @@
 		"db:seed": "npx tsx ./lib/db/seed.ts"
 	},
 	"dependencies": {
+		"@auth/core": "^0.39.0",
 		"@auth/prisma-adapter": "^2.7.4",
 		"@hookform/resolvers": "^3.10.0",
 		"@prisma/client": "^6.2.1",
