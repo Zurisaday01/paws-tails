@@ -16,7 +16,7 @@ const AdminLayout = async ({
 	// Persisting the sidebar state in the cookie.
 	const cookieStore = await cookies();
 	const defaultOpen = cookieStore.get('sidebar:state')?.value === 'true';
-	console.log(defaultOpen);
+
 	return (
 		<SidebarProvider defaultOpen={defaultOpen}>
 			<AppSidebar />

@@ -1,19 +1,9 @@
 'use client';
-// import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
 	Collapsible,
 	CollapsibleContent,
 	CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuGroup,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import {
 	Sidebar,
 	SidebarContent,
@@ -30,14 +20,8 @@ import {
 	SidebarRail,
 } from '@/components/ui/sidebar';
 
-import {
-	BadgeCheck,
-	Bell,
-	ChevronRight,
-	CreditCard,
-	LogOut,
-} from 'lucide-react';
-// import { signOut, useSession } from 'next-auth/react';
+import { ChevronRight } from 'lucide-react';
+
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
@@ -47,7 +31,6 @@ import Image from 'next/image';
 
 export default function AppSidebar() {
 	const pathname = usePathname();
-
 	return (
 		<Sidebar collapsible='icon'>
 			<SidebarHeader>
@@ -118,44 +101,7 @@ export default function AppSidebar() {
 					</SidebarMenu>
 				</SidebarGroup>
 			</SidebarContent>
-			<SidebarFooter>
-				<SidebarMenu>
-					<SidebarMenuItem>
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild></DropdownMenuTrigger>
-							<DropdownMenuContent
-								className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
-								side='bottom'
-								align='end'
-								sideOffset={4}>
-								<DropdownMenuLabel className='p-0 font-normal'></DropdownMenuLabel>
-								<DropdownMenuSeparator />
-
-								<DropdownMenuGroup>
-									<DropdownMenuItem>
-										<BadgeCheck />
-										Account
-									</DropdownMenuItem>
-									<DropdownMenuItem>
-										<CreditCard />
-										Billing
-									</DropdownMenuItem>
-									<DropdownMenuItem>
-										<Bell />
-										Notifications
-									</DropdownMenuItem>
-								</DropdownMenuGroup>
-								<DropdownMenuSeparator />
-								{/* onClick={() => signOut()} */}
-								<DropdownMenuItem>
-									<LogOut />
-									Log out
-								</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-					</SidebarMenuItem>
-				</SidebarMenu>
-			</SidebarFooter>
+			<SidebarFooter></SidebarFooter>
 			<SidebarRail />
 		</Sidebar>
 	);

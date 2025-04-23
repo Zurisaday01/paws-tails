@@ -81,8 +81,6 @@ const ReviewForm = ({
 	> = async values => {
 		const res = await createUpdateReview({ ...values, productId });
 
-		console.log(res);
-
 		if (!res.success) {
 			return toast({
 				variant: 'destructive',

@@ -42,13 +42,14 @@ declare global {
 		categoryId: string;
 		brand: string;
 		description: string;
-		isFeatured: boolean;
-		banner: string | null;
 		stock: number;
 		type: string;
 		price: number | null;
 		salePrice: number | null;
 		stock: number | null;
+		attributeValues?: AttributeValue[];
+		variants?: ProductVariation[];
+		images: string[];
 	}
 
 	// Define the structure for the option
@@ -85,8 +86,6 @@ declare global {
 		slug: string;
 		category: Category;
 		description: string;
-		isFeatured: boolean;
-		banner: string | null;
 		stock: number;
 		type: string;
 		images: string[];

@@ -64,8 +64,6 @@ export const productDefaultValues = {
 	stock: 0,
 	rating: '0',
 	numReviews: '0',
-	isFeatured: false,
-	banner: null,
 };
 
 export const USER_ROLES = process.env.USER_ROLES

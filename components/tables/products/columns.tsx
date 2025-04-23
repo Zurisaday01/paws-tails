@@ -100,11 +100,6 @@ export const columns: ColumnDef<Product>[] = [
 		},
 	},
 	{
-		accessorKey: 'isFeatured',
-		header: 'FEATURED',
-		cell: ({ row }) => <Badge>{row.original.isFeatured ? 'Yes' : 'No'}</Badge>,
-	},
-	{
 		id: 'actions',
 		cell: ({ row }) => <CellAction data={row.original} />,
 	},

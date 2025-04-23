@@ -52,7 +52,6 @@ const ProductsPage = async (props: {
 				<Separator />
 
 				<Suspense
-					key={''}
 					fallback={<DataTableSkeleton columnCount={4} rowCount={10} />}>
 					<>
 						<DataTable columns={columns} data={data} />

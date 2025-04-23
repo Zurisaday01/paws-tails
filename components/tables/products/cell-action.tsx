@@ -65,7 +65,7 @@ export const CellAction: React.FC<CellActionProps> = ({ data }) => {
 
 					<DropdownMenuItem
 						className='cursor-pointer'
-						onClick={() => router.push(`/admin/categories/${data.id}`)}>
+						onClick={() => router.push(`/admin/products/${data.id}`)}>
 						<Edit className='mr-2 h-4 w-4' /> Update
 					</DropdownMenuItem>
 					<DropdownMenuItem

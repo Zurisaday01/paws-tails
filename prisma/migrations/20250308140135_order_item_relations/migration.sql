@@ -6,7 +6,11 @@
 
 */
 -- AlterTable
-ALTER TABLE "OrderItem" DROP CONSTRAINT "orderitems_orderId_productId_pk",
-RENAME CONSTRAINT "orderitems_orderId_productId_pk" TO "orderitems_orderId_variantId_productId_pk",
+-- Drop the existing constraint first
+ALTER TABLE "OrderItem" DROP CONSTRAINT "orderitems_orderId_productId_pk";
+
+-- Add the new composite primary key constraint
+ALTER TABLE "OrderItem"
 ALTER COLUMN "variantId" SET NOT NULL,
 ADD CONSTRAINT "orderitems_orderId_variantId_productId_pk" PRIMARY KEY ("orderId", "productId", "variantId");
+

@@ -18,9 +18,7 @@ import {
 } from '@/components/ui/select';
 import { MultiSelect } from '@/components/ui/multi-select';
 import { structureMultiselectOptions } from '@/lib/utils';
-import {
-	attributeValuesSchema
-} from '@/lib/validators';
+import { attributeValuesSchema } from '@/lib/validators';
 
 interface AddAttributeValuesProps {
 	name: string; // The name of the field array (e.g., "values")
@@ -43,6 +41,7 @@ const AddAttributeOptions = ({
 		name, // Name of the array in the form state
 	});
 	const watchValuesAttributes = useWatch({ name: 'attributes' });
+
 
 	// Automatically update variations when attribute values change
 	useEffect(() => {
@@ -84,6 +83,9 @@ const AddAttributeOptions = ({
 				const availableValues = attributes
 					.filter(attribute => attribute.id === currentId)
 					.map(attribute => attribute.values);
+
+				// Get the selected values for the multi-select
+				const selectedValues = watchValuesAttributes[index]?.values || [];
 
 				return (
 					<div key={field.id}>
@@ -127,6 +129,7 @@ const AddAttributeOptions = ({
 										options={structureMultiselectOptions(
 											availableValues.flat()
 										)}
+										defaultValue={selectedValues}
 										onValueChange={(value: string[]) =>
 											setValue(`${name}.${index}.values`, value)
 										}

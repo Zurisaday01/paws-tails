@@ -44,7 +44,7 @@ export async function generateMetadata(props: {
 		};
 	} else {
 		return {
-			title: 'Catalog',
+			title: 'Paws & Tails | Catalog',
 		};
 	}
 }

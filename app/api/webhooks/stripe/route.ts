@@ -10,8 +10,6 @@ export async function POST(req: NextRequest) {
 		process.env.STRIPE_WEBHOOK_SECRET as string
 	);
 
-	console.log('Received event:', event);
-
 	// Check for successful payment
 	if (event.type === 'charge.succeeded') {
 		try {

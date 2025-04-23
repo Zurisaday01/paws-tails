@@ -1,6 +1,6 @@
 'use client';
 
-import '@uploadthing/react/styles.css';
+// import '@uploadthing/react/styles.css'; this line was causing the error in the sidebar
 import { insertProductSchema } from '@/lib/validators';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -35,22 +35,59 @@ import { Textarea } from '../ui/textarea';
 import { FileUploader } from '../file-uploader';
 import AddAttributeOptions from './add-attribute-options';
 import ProductVariationInsertForm from './product-variation-insert.form';
-import { Checkbox } from '../ui/checkbox';
 import { toast } from '@/hooks/use-toast';
 import { useUploadFile } from '@/hooks/use-upload-file';
 import { UploadedFilesCard } from '../uploaded-files-card';
-import { createProduct } from '@/lib/actions/product.actions';
+import { createProduct, updateProduct } from '@/lib/actions/product.actions';
+import Image from 'next/image';
+import { X } from 'lucide-react';
+import { useState } from 'react';
 
 interface AttributeInsertFormProps {
 	type?: 'Create' | 'Update';
 	initialData?: InsertProduct;
 	pageTitle: string;
 	categories: Category[];
-	//
 	attributes: Attribute[];
 	attributeValues: AttributeValue[];
-	// variants: ProductVariation[];
 }
+
+const formatVariationsForForm = (productVariations: any[]) => {
+	return productVariations.map(variation => ({
+		id: variation.id || '',
+		stock: variation.stock || undefined,
+		price: variation.price?.toString() || undefined,
+		salePrice: variation.salePrice?.toString() || undefined,
+		attributeValues: variation.attributeValues.map(
+			(value: AttributeValue) => value.id
+		),
+	}));
+};
+
+const formatAttributesForForm = (productAttributes: any[]) => {
+	const formattedAttributes: any[] = [];
+
+	productAttributes.forEach(item => {
+		const { attributeId, id } = item;
+
+		// Find the existing attribute group
+		let attribute = formattedAttributes.find(attr => attr.id === attributeId);
+
+		if (!attribute) {
+			// Create a new attribute group if not found
+			attribute = {
+				id: attributeId,
+				values: [],
+			};
+			formattedAttributes.push(attribute);
+		}
+
+		// Add the product's value id (attributeValueId)
+		attribute.values.push(id);
+	});
+
+	return formattedAttributes;
+};
 
 const AttributeInsertForm = ({
 	type = 'Create',
@@ -69,29 +106,48 @@ const AttributeInsertForm = ({
 		}
 	);
 
+	// Construct the default values for the form
 	const defaultValues = {
 		id: initialData?.id || '',
 		name: initialData?.name || '',
 		slug: initialData?.slug || '',
-		isFeatured: initialData?.isFeatured || false,
-		banner: initialData?.banner || null,
-		attributes: [],
-		variations: [],
+		attributes: initialData?.attributeValues
+			? formatAttributesForForm(initialData?.attributeValues)
+			: [],
+		variants: initialData?.variants
+			? formatVariationsForForm(initialData?.variants || [])
+			: [],
 		type: initialData?.type || 'simple',
 		categoryId: initialData?.categoryId || '',
 		description: initialData?.description || '',
 		stock: initialData?.stock || undefined,
 		price: initialData?.price?.toString() || undefined,
 		salePrice: initialData?.salePrice?.toString() || undefined,
+		imagesDb: initialData?.images || [],
 	};
 
+	// current images
+	const [currentImages, setCurrentImages] = useState<string[]>(
+		defaultValues.imagesDb
+	);
+
+	const originalImages = defaultValues.imagesDb;
+
+	const handleDeleteImage = (url: string) => {
+		setCurrentImages(prev => prev.filter(image => image !== url));
+	};
+
+	const handleResetImages = () => {
+		setCurrentImages(originalImages);
+	};
+
+	// Initialize the form with default values
 	const form = useForm<z.infer<typeof insertProductSchema>>({
 		resolver: zodResolver(insertProductSchema),
 		values: defaultValues,
 	});
 
-	const watchType = form.watch('type'); // you can also target specific fields by their names
-	const watchIsFeatured = form.watch('isFeatured'); // if it is featured the user can add a banner
+	const watchType = form.watch('type');
 
 	const onSubmit = async (values: z.infer<typeof insertProductSchema>) => {
 		// upload images first
@@ -106,6 +162,31 @@ const AttributeInsertForm = ({
 		// On Create
 		if (type === 'Create') {
 			const res = await createProduct(productData);
+
+			if (!res.success) {
+				toast({
+					variant: 'destructive',
+					description: res.message,
+				});
+			} else {
+				toast({
+					description: res.message,
+				});
+				router.push('/admin/products');
+			}
+		}
+
+		// On Update
+		if (type === 'Update') {
+			const newImages = uploadedCurrentFiles?.map(file => file.url);
+			const images = [...currentImages, ...(newImages || [])];
+
+			const updatedProductData = {
+				...values,
+				images,
+			};
+
+			const res = await updateProduct(updatedProductData);
 
 			if (!res.success) {
 				toast({
@@ -176,7 +257,6 @@ const AttributeInsertForm = ({
 				stock: undefined,
 			})
 		);
-
 		// Update form state with generated variations
 		replace(productVariations);
 	};
@@ -191,6 +271,44 @@ const AttributeInsertForm = ({
 			<CardContent>
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
+						{type === 'Update' && (
+							<div>
+								<div className='flex items-center gap-2 justify-between'>
+									<FormLabel>Current Images</FormLabel>
+									<Button
+										variant='outline'
+										type='button'
+										onClick={handleResetImages}>
+										Reset
+									</Button>
+								</div>
+
+								{currentImages.length > 0 && (
+									<div className='flex flex-wrap gap-4'>
+										{currentImages.map((image: string) => (
+											<div key={image} className='relative'>
+												<Image
+													src={image}
+													width={200}
+													height={200}
+													alt='product image'
+													className='w-32 h-32 object-cover rounded'
+												/>
+												<Button
+													variant='ghost'
+													size='icon'
+													className='absolute top-0 right-0'
+													type='button'
+													onClick={() => handleDeleteImage(image)}>
+													<X className='w-5 h-5' />
+												</Button>
+											</div>
+										))}
+									</div>
+								)}
+							</div>
+						)}
+
 						<FormField
 							control={form.control}
 							name='images'
@@ -206,8 +324,6 @@ const AttributeInsertForm = ({
 												multiple={true}
 												maxSize={4 * 1024 * 1024}
 												progresses={progresses}
-												// pass the onUpload function here for direct upload
-												// onUpload={uploadFiles}
 												disabled={isUploading}
 											/>
 										</FormControl>
@@ -323,52 +439,6 @@ const AttributeInsertForm = ({
 
 						<FormField
 							control={form.control}
-							name='isFeatured'
-							render={({ field }) => (
-								<FormItem className='flex items-center gap-2'>
-									<FormLabel className='mt-2'>Is Featured?</FormLabel>
-									<FormControl>
-										<Checkbox
-											className='mt-0'
-											checked={field.value}
-											onCheckedChange={field.onChange}
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						{watchIsFeatured ? (
-							<FormField
-								control={form.control}
-								name='banner'
-								render={({ field }) => (
-									<div className='space-y-6'>
-										<FormItem className='w-full'>
-											<FormLabel>Banner Image</FormLabel>
-											<FormControl>
-												<FileUploader
-													value={field.value}
-													onValueChange={field.onChange}
-													maxFileCount={1}
-													maxSize={4 * 1024 * 1024}
-													// disabled={loading}
-													// progresses={progresses}
-													// pass the onUpload function here for direct upload
-													// onUpload={uploadFiles}
-													// disabled={isUploading}
-												/>
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									</div>
-								)}
-							/>
-						) : null}
-
-						<FormField
-							control={form.control}
 							name='type'
 							render={({ field }) => (
 								<FormItem>
@@ -426,9 +496,7 @@ const AttributeInsertForm = ({
 											<div key={i} className='flex flex-col gap-4 mt-9'>
 												<div className='flex flex-col gap-4'>
 													<div className='flex gap-2'>
-														{/* Display selected attribute values */}
 														{variant.attributeValues.map((valueId: string) => {
-															// Find the attribute value by its ID
 															const selectedValue = attributeValues.find(
 																value => value.id === valueId
 															);
@@ -516,9 +584,11 @@ const AttributeInsertForm = ({
 								/>
 							</div>
 						) : null}
-
-						{/* Product Variation */}
-						<Button type='submit'>Create Product</Button>
+						<Button
+							type='submit'
+							disabled={isUploading || form.formState.isSubmitting}>
+							{type === 'Create' ? 'Create Product' : 'Update Product'}
+						</Button>
 					</form>
 				</Form>
 			</CardContent>

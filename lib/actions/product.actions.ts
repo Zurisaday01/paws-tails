@@ -30,16 +30,6 @@ export async function getLatestProducts() {
 	return convertToPlainObject(data);
 }
 
-// Get featured products
-export async function getFeaturedProducts() {
-	const data = await prisma.product.findMany({
-		where: { isFeatured: true },
-		orderBy: { createdAt: 'desc' },
-		take: 4,
-	});
-
-	return convertToPlainObject(data);
-}
 
 export const createProduct = async (
 	data: z.infer<typeof insertProductSchema>
@@ -54,8 +44,6 @@ export const createProduct = async (
 			description,
 			stock,
 			images,
-			isFeatured,
-			banner,
 			price,
 			salePrice,
 			attributes,
@@ -75,8 +63,6 @@ export const createProduct = async (
 					description,
 					stock,
 					images,
-					isFeatured,
-					banner,
 					price,
 					salePrice,
 					attributes: {
@@ -115,8 +101,6 @@ export const createProduct = async (
 					description,
 					stock,
 					images,
-					isFeatured,
-					banner,
 					price,
 					salePrice,
 				},
@@ -130,6 +114,145 @@ export const createProduct = async (
 		return {
 			success: true,
 			message: 'Product created successfully',
+		};
+	} catch (error) {
+		console.log('error', (error as Error).message);
+		return { success: false, message: formatError(error) };
+	}
+};
+
+export const updateProduct = async (
+	data: z.infer<typeof insertProductSchema> // Assumed to be your validation schema for updating products
+) => {
+	try {
+		// Validate and parse the input data
+		const {
+			id, // Product ID to update
+			name,
+			slug,
+			categoryId,
+			type,
+			description,
+			stock,
+			images,
+			price,
+			salePrice,
+			attributes,
+			variants, // Updated list of variants
+			attributeValues,
+		} = insertProductSchema.parse(data);
+
+		// Handle the 'variable' product type (with variants)
+		if (type === 'variable') {
+			// First, update the main product fields
+			await prisma.product.update({
+				where: { id },
+				data: {
+					name,
+					slug,
+					categoryId,
+					type,
+					description,
+					stock,
+					images,
+					price,
+					salePrice,
+					attributes: {
+						connect: attributes?.map(attribute => ({
+							id: attribute.id,
+						})),
+					},
+					attributeValues: {
+						connect: attributeValues?.map(value => ({
+							id: value.attributeValueId,
+						})),
+					},
+				},
+			});
+
+			// Get the current variants for this product
+			const currentVariants = await prisma.productVariation.findMany({
+				where: { productId: id },
+			});
+
+			// Now, handle updating and deleting variants
+			const variantIdsFromRequest = variants?.map(variant => variant.id);
+
+			// Delete variants that no longer exist in the updated request
+			await prisma.productVariation.deleteMany({
+				where: {
+					productId: id,
+					NOT: {
+						id: {
+							in: variantIdsFromRequest?.filter((id): id is string => id !== undefined),
+						},
+					},
+				},
+			});
+
+			// Create or update the remaining variants
+			await Promise.all(
+				variants?.map(async variant => {
+					if (currentVariants.some(v => v.id === variant.id)) {
+						// If the variant already exists, update it
+						await prisma.productVariation.update({
+							where: { id: variant.id },
+							data: {
+								stock: variant.stock ?? 0,
+								price: variant.price ?? '0',
+								salePrice: variant.salePrice ?? '0',
+								attributeValues: {
+									connect: variant.attributeValues.map(valueId => ({
+										id: valueId,
+									})),
+								},
+							},
+						});
+					} else {
+						// If it's a new variant, create it
+						await prisma.productVariation.create({
+							data: {
+								stock: variant.stock ?? 0,
+								price: variant.price ?? '0',
+								salePrice: variant.salePrice ?? '0',
+								productId: id, // Make sure to associate with the correct product
+								attributeValues: {
+									connect: variant.attributeValues.map(valueId => ({
+										id: valueId,
+									})),
+								},
+							},
+						});
+					}
+				}) ?? []
+			);
+		}
+
+		// Handle the 'simple' product type (no variants)
+		if (type === 'simple') {
+			await prisma.product.update({
+				where: { id },
+				data: {
+					name,
+					slug,
+					categoryId,
+					type,
+					description,
+					stock,
+					images,
+					price,
+					salePrice,
+				},
+			});
+		}
+
+		// Revalidate the cache after update
+		revalidatePath('/admin/products');
+
+		// Return success message
+		return {
+			success: true,
+			message: 'Product updated successfully',
 		};
 	} catch (error) {
 		console.log('error', (error as Error).message);
@@ -244,8 +367,6 @@ export const getAllProducts = async ({
 
 		const dataCount = await prisma.category.count();
 
-		console.log('data', data);
-
 		return {
 			data: JSON.parse(JSON.stringify(data)),
 			totalPages: Math.ceil(dataCount / limit),
@@ -294,6 +415,32 @@ export async function getProductBySlug(slug: string) {
 
 	return JSON.parse(JSON.stringify(product));
 }
+
+export const getProductById = async (id: string) => {
+	const product = await prisma.product.findUnique({
+		where: { id },
+		include: {
+			category: true,
+			attributes: true,
+			attributeValues: {
+				include: {
+					attribute: true,
+				},
+			},
+			variants: {
+				include: {
+					attributeValues: {
+						include: {
+							attribute: true,
+						},
+					},
+				},
+			},
+		},
+	});
+
+	return JSON.parse(JSON.stringify(product));
+};
 
 export const deleteProduct = async (id: string) => {
 	try {

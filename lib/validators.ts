@@ -1,10 +1,6 @@
 import { z } from 'zod';
 import { formatNumberWithDecimal } from './utils';
-import {
-	ACCEPTED_IMAGE_TYPES,
-	MAX_FILE_SIZE,
-	PAYMENT_METHODS,
-} from './constants';
+import { PAYMENT_METHODS } from './constants';
 
 const currency = z
 	.string()
@@ -176,22 +172,7 @@ export const insertProductSchema = z.object({
 	description: z.string().min(3, 'Description must be at least 3 characters'),
 	stock: z.coerce.number().optional(),
 	images: z.any(),
-	// .refine(files => files?.length === 1, 'Image is required.')
-	// .refine(files => files?.[0]?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
-	// .refine(
-	// 	files => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-	// 	'.jpg, .jpeg, .png and .webp files are accepted.'
-	// ),
-	isFeatured: z.boolean(),
-	banner: z
-		.any()
-		.refine(files => files?.length == 1, 'Image is required.')
-		.refine(files => files?.[0]?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
-		.refine(
-			files => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-			'.jpg, .jpeg, .png and .webp files are accepted.'
-		)
-		.nullable(),
+	imagesDb: z.any().optional(),
 	price: currency.optional(),
 	salePrice: currency.optional(),
 	attributes: z.array(productAttribute).optional(),
