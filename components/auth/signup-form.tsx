@@ -11,7 +11,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
-import { toast } from '@/hooks/use-toast';
 
 const SignUpForm = () => {
 	//define the action state (server action function, initial state)
@@ -29,18 +28,7 @@ const SignUpForm = () => {
 	// ✅ Show toast and redirect on success
 	useEffect(() => {
 		if (data?.success) {
-			toast({
-				title: 'Account Created',
-				description: 'Your account has been created successfully.',
-			});
-
-			// Delay redirect to let the user see the toast
-			const timeout = setTimeout(() => {
-				router.push(callbackUrl);
-			}, 2000); // 2 seconds
-
-			// Cleanup
-			return () => clearTimeout(timeout);
+			router.push(callbackUrl);
 		}
 	}, [data, callbackUrl, router]);
 
