@@ -93,7 +93,7 @@ const SignUpForm = () => {
 					Already have an account?{' '}
 					<Link
 						href='/sign-in'
-						className='text-brown-100 transition-colors duration-150 underline hover:text-brown-50'>
+						className='text-brown-100 dark:text-brown-50 transition-colors duration-150 underline hover:text-brown-50'>
 						Sign In
 					</Link>
 				</div>

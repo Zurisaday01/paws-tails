@@ -72,7 +72,7 @@ const SignInForm = () => {
 					Don&apos;t have an account?{' '}
 					<Link
 						href='/sign-up'
-						className='text-brown-100 transition-colors duration-150 underline hover:text-brown-50'>
+						className='text-brown-100 dark:text-brown-50 transition-colors duration-150 underline hover:text-brown-50'>
 						Sign Up
 					</Link>
 				</div>
