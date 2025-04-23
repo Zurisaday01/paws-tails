@@ -9,7 +9,10 @@ export default async function Home() {
 		<>
 			{/* VIDEO BANNER */}
 			<video className='w-full' autoPlay controls loop muted>
-				<source src='brand.mp4' type='video/mp4' />
+				<source
+					src='https://res.cloudinary.com/dvv07pzf2/video/upload/v1745429162/glambqkiqdlx8xeqc9gr.mp4'
+					type='video/mp4'
+				/>
 			</video>
 			<ProductList
 				data={latestProducts as unknown as Product[]}
