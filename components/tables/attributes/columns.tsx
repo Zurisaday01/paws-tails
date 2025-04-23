@@ -18,7 +18,7 @@ export const columns: ColumnDef<Attribute>[] = [
 		accessorKey: 'values',
 		header: 'VALUES',
 		cell: ({ row }) => (
-			<div>
+			<div className='flex flex-wrap gap-1'>
 				{row.original.values.map(value => (
 					<Badge key={value.id} className='mr-1'>
 						{value.value}
