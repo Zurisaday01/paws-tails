@@ -57,6 +57,7 @@ const ProductDetailsPage = async (props: {
 		?.map((attr: AttributeValue) => attr.value)
 		.join(' / ');
 
+
 	return (
 		<>
 			<section>
@@ -147,6 +148,8 @@ const ProductDetailsPage = async (props: {
 							<div>
 								<AddToCart
 									cart={cart}
+									isVariable={product.type === 'variable'}
+									variantsCombinationCount={currentVariant?.attributeValues?.length}
 									item={{
 										productId: product.id,
 										name: product.name,

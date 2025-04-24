@@ -3,24 +3,16 @@
 import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { Button } from '../ui/button';
 import { Separator } from '../ui/separator';
+import { getParamsObject } from '@/lib/utils';
 
 const SelectVariant = ({ product }: { product: Product }) => {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 	const router = useRouter();
 
-	// Convert searchParams to an object for easy manipulation
-	const getParamsObject = () => {
-		const params: Record<string, string> = {};
-		searchParams.forEach((value, key) => {
-			params[key] = value;
-		});
-		return params;
-	};
-
 	// Update URL parameters when a variant is selected
 	const handleSelectVariant = (attributeId: string, variantId: string) => {
-		const params = getParamsObject();
+		const params = getParamsObject(searchParams);
 		params[attributeId] = variantId; // Update or add the selected variant
 
 		// Construct new search params string

@@ -218,3 +218,11 @@ export const getProductVariablePrice = (product: Product) => {
 
 	return { minPrice, maxPrice };
 };
+
+export const getParamsObject = (searchParams: URLSearchParams) => {
+	const params: Record<string, string> = {};
+	searchParams.forEach((value, key) => {
+		params[key] = value;
+	});
+	return params;
+};

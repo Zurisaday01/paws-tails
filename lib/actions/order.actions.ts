@@ -11,6 +11,7 @@ import { revalidatePath } from 'next/cache';
 import { PAGE_SIZE } from '../constants';
 import { Prisma } from '@prisma/client';
 import { prisma } from '../db/prisma';
+import { redirect } from 'next/navigation';
 
 // Create order and create the order items
 export async function createOrder() {
@@ -212,7 +213,8 @@ export async function getMyOrders({
 	page: number;
 }) {
 	const session = await auth();
-	if (!session) throw new Error('User is not authorized');
+	if (!session) redirect('/unauthorized');
+
 
 	const data = await prisma.order.findMany({
 		where: { userId: session?.user?.id },
