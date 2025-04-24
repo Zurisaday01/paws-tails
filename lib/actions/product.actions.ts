@@ -30,7 +30,6 @@ export async function getLatestProducts() {
 	return convertToPlainObject(data);
 }
 
-
 export const createProduct = async (
 	data: z.infer<typeof insertProductSchema>
 ) => {
@@ -174,22 +173,6 @@ export const updateProduct = async (
 			const currentVariants = await prisma.productVariation.findMany({
 				where: { productId: id },
 			});
-
-			// Now, handle updating and deleting variants
-			const variantIdsFromRequest = variants?.map(variant => variant.id);
-
-			// Delete variants that no longer exist in the updated request
-			await prisma.productVariation.deleteMany({
-				where: {
-					productId: id,
-					NOT: {
-						id: {
-							in: variantIdsFromRequest?.filter((id): id is string => id !== undefined),
-						},
-					},
-				},
-			});
-
 			// Create or update the remaining variants
 			await Promise.all(
 				variants?.map(async variant => {

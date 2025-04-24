@@ -210,11 +210,60 @@ const AttributeInsertForm = ({
 
 	const watchAttributeValues = form.watch('attributeValues');
 
-	const handleGenerateVariants = () => {
-		// clear the previous variants
-		replace([]);
+	// const handleGenerateVariants = () => {
+	// 	// clear the previous variants
+	// 	replace([]);
 
-		const selectedAttributes = watchAttributeValues;
+	// 	const selectedAttributes = watchAttributeValues;
+
+	// 	if (!selectedAttributes || selectedAttributes.length === 0) {
+	// 		toast({
+	// 			variant: 'destructive',
+	// 			description: 'Please select attributes first.',
+	// 		});
+	// 		return;
+	// 	}
+
+	// 	// Group selected attribute values by attributeId
+	// 	const groupedAttributes = selectedAttributes.reduce(
+	// 		(acc, { attributeId, attributeValueId }) => {
+	// 			if (!acc[attributeId]) acc[attributeId] = [];
+	// 			acc[attributeId].push(attributeValueId);
+	// 			return acc;
+	// 		},
+	// 		{} as Record<string, string[]>
+	// 	);
+
+	// 	// Convert object values to an array of arrays
+	// 	const attributeGroups = Object.values(groupedAttributes);
+
+	// 	// Generate all combinations of attribute values
+	// 	const generateCombinations = (groups: string[][]): string[][] => {
+	// 		if (groups.length === 0) return [[]];
+
+	// 		const firstGroup = groups[0];
+	// 		const restCombinations = generateCombinations(groups.slice(1));
+
+	// 		return firstGroup.flatMap(value =>
+	// 			restCombinations.map(combination => [value, ...combination])
+	// 		);
+	// 	};
+
+	// 	const productVariations = generateCombinations(attributeGroups).map(
+	// 		attributeValues => ({
+	// 			attributeValues,
+	// 			price: undefined,
+	// 			salePrice: undefined,
+	// 			stock: undefined,
+	// 		})
+	// 	);
+	// 	// Update form state with generated variations
+	// 	replace(productVariations);
+	// };
+
+	const handleGenerateVariants = () => {
+		// Clear only the variants that aren't reusable (we'll filter which ones to keep)
+		const selectedAttributes = form.getValues('attributes');
 
 		if (!selectedAttributes || selectedAttributes.length === 0) {
 			toast({
@@ -224,41 +273,59 @@ const AttributeInsertForm = ({
 			return;
 		}
 
-		// Group selected attribute values by attributeId
-		const groupedAttributes = selectedAttributes.reduce(
-			(acc, { attributeId, attributeValueId }) => {
-				if (!acc[attributeId]) acc[attributeId] = [];
-				acc[attributeId].push(attributeValueId);
-				return acc;
-			},
-			{} as Record<string, string[]>
-		);
+		// Create all combinations from selected attribute values
+		const combinations: string[][] = [];
 
-		// Convert object values to an array of arrays
-		const attributeGroups = Object.values(groupedAttributes);
-
-		// Generate all combinations of attribute values
-		const generateCombinations = (groups: string[][]): string[][] => {
-			if (groups.length === 0) return [[]];
-
-			const firstGroup = groups[0];
-			const restCombinations = generateCombinations(groups.slice(1));
-
-			return firstGroup.flatMap(value =>
-				restCombinations.map(combination => [value, ...combination])
-			);
+		const getCombinations = (arrays: string[][], prefix: string[] = []) => {
+			if (!arrays.length) {
+				combinations.push(prefix);
+				return;
+			}
+			const [first, ...rest] = arrays;
+			for (const value of first) {
+				getCombinations(rest, [...prefix, value]);
+			}
 		};
 
-		const productVariations = generateCombinations(attributeGroups).map(
-			attributeValues => ({
-				attributeValues,
+		const valuesByAttribute = selectedAttributes.map(attr => attr.values);
+
+		getCombinations(valuesByAttribute);
+
+		// Map existing variants for easy lookup
+		const existingVariantsMap = new Map(
+			fieldsVariants.map(variant => {
+				const key = variant.attributeValues.sort().join('|');
+				return [key, variant];
+			})
+		);
+
+		const newVariants = combinations.map(combo => {
+			const key = combo.sort().join('|');
+
+			// Reuse existing if found
+			if (existingVariantsMap.has(key)) {
+				return existingVariantsMap.get(key)!;
+			}
+
+			// Otherwise, create new variant
+			return {
+				id: '',
 				price: undefined,
 				salePrice: undefined,
 				stock: undefined,
-			})
-		);
-		// Update form state with generated variations
-		replace(productVariations);
+				attributeValues: combo,
+			};
+		});
+
+		// Replace all variants with the updated list
+		replace(newVariants);
+
+		// send feedback to the user
+		toast({
+			title: 'Variants generated',
+			description:
+				'If you selected a new variant option, please clear the inputs that still contain values before adding new ones.',
+		});
 	};
 
 	return (

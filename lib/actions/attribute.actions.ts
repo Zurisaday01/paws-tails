@@ -72,7 +72,7 @@ export const getAllAttributesValues = async () => {
 		const data = await prisma.attributeValue.findMany({
 			include: {
 				attribute: true,
-			}
+			},
 		});
 
 		return {
@@ -137,6 +137,8 @@ export const updateAttribute = async (
 		// Validate and parse the input data
 		const { id, name, slug, values } = insertAttributeSchema.parse(data);
 
+		console.log('values', values);
+
 		// Fetch the existing attribute with its current values
 		const existingAttribute = await prisma.attribute.findUnique({
 			where: { id },
@@ -148,20 +150,28 @@ export const updateAttribute = async (
 		}
 
 		// Extract existing values and input values
-		const existingValues = existingAttribute.values.map(v =>
-			v.value.toLowerCase()
-		);
-		const inputValues = values.map(v => v.value.toLowerCase());
+		const existingValues = existingAttribute.values.map(v => ({
+			id: v.id,
+			value: v.value,
+		}));
 
-		// Identify values to delete (present in DB but not in input)
-		const valuesToDelete = existingAttribute.values.filter(
-			v => !inputValues.includes(v.value.toLowerCase())
-		);
+		const inputValues = values.map(v => ({
+			id: v.id,
+			value: v.value,
+		}));
+
+		console.log('existingValues', existingAttribute);
 
 		// Identify new values to create (present in input but not in DB)
-		const valuesToCreate = values.filter(
-			v => !existingValues.includes(v.value.toLowerCase())
+		// Filter out new values (non-UUIDs or not in DB)
+		const valuesToCreate = inputValues.filter(
+			input => !existingValues.some(ev => ev.id === input.id)
 		);
+
+		const valuesToUpdate = inputValues.filter(input => {
+			const match = existingValues.find(ev => ev.id === input.id);
+			return match && match.value !== input.value;
+		});
 
 		// Perform the update operation
 		await prisma.$transaction(async tx => {
@@ -174,11 +184,15 @@ export const updateAttribute = async (
 				},
 			});
 
-			// Delete values that are no longer needed
-			if (valuesToDelete.length > 0) {
-				await tx.attributeValue.deleteMany({
-					where: { id: { in: valuesToDelete.map(v => v.id) } },
-				});
+			if (valuesToUpdate.length > 0) {
+				await Promise.all(
+					valuesToUpdate.map(value =>
+						tx.attributeValue.update({
+							where: { id: value.id },
+							data: { value: value.value },
+						})
+					)
+				);
 			}
 
 			// Add new values
