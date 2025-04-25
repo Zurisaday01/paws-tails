@@ -143,6 +143,40 @@ export const updateProduct = async (
 
 		// Handle the 'variable' product type (with variants)
 		if (type === 'variable') {
+			// Get current attribute values connected to the product
+			const currentAttributeValues = await prisma.product.findUnique({
+				where: { id },
+				select: {
+					attributeValues: {
+						select: {
+							id: true,
+						},
+					},
+				},
+			});
+
+			const currentAttrValueIds =
+				currentAttributeValues?.attributeValues.map(av => av.id) ?? [];
+			const incomingAttrValueIds =
+				attributeValues?.map(val => val.attributeValueId) ?? [];
+
+			// Find attribute values to disconnect
+			const attrValuesToDisconnect = currentAttrValueIds.filter(
+				id => !incomingAttrValueIds.includes(id)
+			);
+
+			// Disconnect removed attribute values
+			if (attrValuesToDisconnect.length > 0) {
+				await prisma.product.update({
+					where: { id },
+					data: {
+						attributeValues: {
+							disconnect: attrValuesToDisconnect.map(id => ({ id })),
+						},
+					},
+				});
+			}
+
 			// First, update the main product fields
 			await prisma.product.update({
 				where: { id },
@@ -173,6 +207,25 @@ export const updateProduct = async (
 			const currentVariants = await prisma.productVariation.findMany({
 				where: { productId: id },
 			});
+
+			const currentVariantIds = currentVariants.map(v => v.id);
+			const incomingVariantIds = variants?.map(v => v.id).filter(Boolean) ?? [];
+
+			// Disconnect variants that are no longer present
+			const variantsToDisconnect = currentVariantIds.filter(
+				id => !incomingVariantIds.includes(id)
+			);
+
+			await Promise.all(
+				variantsToDisconnect.map(async variantId => {
+					await prisma.productVariation.update({
+						where: { id: variantId },
+						data: {
+							productId: null, // Disconnect
+						},
+					});
+				})
+			);
 			// Create or update the remaining variants
 			await Promise.all(
 				variants?.map(async variant => {

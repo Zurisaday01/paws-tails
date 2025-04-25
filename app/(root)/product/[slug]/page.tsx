@@ -57,7 +57,6 @@ const ProductDetailsPage = async (props: {
 		?.map((attr: AttributeValue) => attr.value)
 		.join(' / ');
 
-
 	return (
 		<>
 			<section>
@@ -81,8 +80,12 @@ const ProductDetailsPage = async (props: {
 									((product.stock as number) > 0 ? (
 										<div className='flex flex-col gap-1 items-start'>
 											<ProductPrice
+												className='text-base text-dark line-through'
+												value={Number(product?.price)}
+											/>
+											<ProductPrice
 												className='text-2xl text-brown-50'
-												value={Number(product.price)}
+												value={Number(product?.salePrice ?? 0)}
 											/>
 
 											<Badge variant='outline'>In Stock</Badge>
@@ -105,7 +108,7 @@ const ProductDetailsPage = async (props: {
 															/>
 															<ProductPrice
 																className='text-2xl text-brown-50'
-																value={Number(currentVariant?.salePrice)}
+																value={Number(currentVariant?.salePrice ?? 0)}
 															/>
 														</>
 													) : (
@@ -149,14 +152,16 @@ const ProductDetailsPage = async (props: {
 								<AddToCart
 									cart={cart}
 									isVariable={product.type === 'variable'}
-									variantsCombinationCount={currentVariant?.attributeValues?.length}
+									variantsCombinationCount={
+										currentVariant?.attributeValues?.length
+									}
 									item={{
 										productId: product.id,
 										name: product.name,
 										slug: product.slug,
 										price:
 											product.type === 'variable'
-												? currentVariant.salePrice ?? currentVariant.price
+												? currentVariant?.salePrice ?? currentVariant.price
 												: product.salePrice ?? product.price,
 										variant:
 											product.type === 'variable' ? variantName : 'simple',

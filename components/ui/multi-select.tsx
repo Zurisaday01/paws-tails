@@ -2,7 +2,6 @@ import * as React from 'react';
 import { cva } from 'class-variance-authority';
 import {
 	CheckIcon,
-	XCircle,
 	ChevronDown,
 	XIcon,
 	WandSparkles,
@@ -72,9 +71,13 @@ export const MultiSelect = React.forwardRef<
 		const [isAnimating, setIsAnimating] = React.useState(false);
 
 		const toggleOption = (option: string) => {
+			console.log('Remove:', option);
 			const newSelectedValues = selectedValues.includes(option)
 				? selectedValues.filter(value => value !== option)
 				: [...selectedValues, option];
+
+			console.log('New selected values:', newSelectedValues);
+
 			setSelectedValues(newSelectedValues);
 
 			onValueChange(newSelectedValues);
@@ -87,12 +90,6 @@ export const MultiSelect = React.forwardRef<
 
 		const handleTogglePopover = () => {
 			setIsPopoverOpen(prev => !prev);
-		};
-
-		const clearExtraOptions = () => {
-			const newSelectedValues = selectedValues.slice(0, maxCount);
-			setSelectedValues(newSelectedValues);
-			onValueChange(newSelectedValues);
 		};
 
 		const toggleAll = () => {
@@ -134,13 +131,6 @@ export const MultiSelect = React.forwardRef<
 												)}
 												style={{ animationDuration: `${animation}s` }}>
 												{option?.label}
-												<XCircle
-													className='ml-2 h-4 w-4 cursor-pointer'
-													onClick={event => {
-														event.stopPropagation();
-														toggleOption(value);
-													}}
-												/>
 											</Badge>
 										);
 									})}
@@ -153,13 +143,6 @@ export const MultiSelect = React.forwardRef<
 											)}
 											style={{ animationDuration: `${animation}s` }}>
 											{`+ ${selectedValues.length - maxCount} more`}
-											<XCircle
-												className='ml-2 h-4 w-4 cursor-pointer'
-												onClick={event => {
-													event.stopPropagation();
-													clearExtraOptions();
-												}}
-											/>
 										</Badge>
 									)}
 								</div>
@@ -171,6 +154,7 @@ export const MultiSelect = React.forwardRef<
 											handleClear();
 										}}
 									/>
+
 									<Separator
 										orientation='vertical'
 										className='flex min-h-6 h-full'

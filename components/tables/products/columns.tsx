@@ -85,7 +85,7 @@ export const columns: ColumnDef<Product>[] = [
 		header: 'SALE PRICE',
 		cell: ({ row }) => {
 			if (row.original.type === 'simple') {
-				return <div>{formatCurrency(row.original.salePrice)}</div>;
+				return <div>{formatCurrency(row.original?.salePrice)}</div>;
 			}
 
 			const prices = row?.original?.variants?.map(variant => variant.salePrice);

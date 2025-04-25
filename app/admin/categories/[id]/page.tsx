@@ -5,7 +5,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 export const metadata: Metadata = {
-	title: 'Dashboard : Update Attribute',
+	title: 'Dashboard : Update Category',
 };
 
 const UpdateCategoryPage = async (props: {
