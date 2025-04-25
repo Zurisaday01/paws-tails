@@ -55,9 +55,9 @@ interface AttributeInsertFormProps {
 const formatVariationsForForm = (productVariations: any[]) => {
 	return productVariations.map(variation => ({
 		id: variation.id || '',
-		stock: variation.stock || undefined,
-		price: variation.price?.toString() || undefined,
-		salePrice: variation?.salePrice?.toString() || undefined,
+		stock: variation.stock ?? undefined,
+		price: variation.price?.toString() ?? undefined,
+		salePrice: variation?.salePrice?.toString() ?? undefined,
 		attributeValues: variation.attributeValues.map(
 			(value: AttributeValue) => value.id
 		),
