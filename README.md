@@ -68,6 +68,52 @@ STRIPE_WEBHOOK_SECRET=
 ```
 
 ## User Screens
+<details>
+  <summary>Auth</summary>
+  
+  ![sign-up](https://github.com/user-attachments/assets/49b97189-4ef2-4f1d-849e-33ee90ac4361)
+  
+  ![sign-in](https://github.com/user-attachments/assets/30be52c2-4ee4-450b-a4ca-a1122067defc)
+  
+</details>
+<details>
+  <summary>Home</summary>
+  
+  ![home](https://github.com/user-attachments/assets/5edddf79-b946-42ad-b1c3-85941678f8b3)
+  
+</details>
+<details>
+  <summary>Catalog</summary>
+  
+  ![catalog](https://github.com/user-attachments/assets/74aa2e59-3700-4bc5-84c3-8c9fa6dd8357)
+  
+</details>
+<details>
+  <summary>Product Details</summary>
+  
+  ![product-details](https://github.com/user-attachments/assets/02f71328-5fc4-4c62-804d-44e643665855)
+  
+</details>
+<details>
+  <summary>Shopping Cart</summary>
+  
+  ![cart](https://github.com/user-attachments/assets/6a02d63b-4938-49ce-ba68-ec39a7443241)
+  
+</details>
+<details>
+  <summary>Order</summary>
+  
+  ![address](https://github.com/user-attachments/assets/7b82d2fc-f063-4e31-b376-a3dc36c4cf43)
+  
+  ![payment](https://github.com/user-attachments/assets/4cf750dd-5f75-4ce8-8101-4469c145f921)
+  
+  ![place-order](https://github.com/user-attachments/assets/8ad781e1-95c8-4c1b-a40b-63ca28148746)
+
+  ![Order History](https://github.com/user-attachments/assets/efac6c48-f268-4dcb-af96-6bf8aed06f34)
+  
+  ![order-details](https://github.com/user-attachments/assets/29eb7cca-d045-4f8d-a659-ba1f0633a0ee)
+
+</details>
 
 ## Demos
 
