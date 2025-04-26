@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Paws & Tails E-commerce
 
-## Getting Started
+Paws & Tails is an e-commerce platform built with Next.js, focused on selling pet products. It features a full admin dashboard, a smooth checkout experience, and customer tools like order tracking, reviews, and filtering. It uses a modern stack including Prisma, Tailwind CSS, Stripe, and PostgreSQL.
 
-First, run the development server:
+## Technologies
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Next.js 15**: React framework for routing, server components, and rendering
+- **Tailwind CSS**: Utility-first CSS
+- **Shadcn UI**: Styled, accessible components using Radix and Tailwind
+- **Prisma**: Type-safe ORM for working with the database
+- **Neon (PostgreSQL)**: Scalable cloud PostgreSQL database
+- **Uploadthing**: File upload handler for client-server transfer
+- **Lucide-react**: Icon library
+- **React Hook Form**: Lightweight form state and validation management
+- **Zod**: Type-safe schema validation for form data
+- **@tanstack/react-table**: Headless table logic for complex data tables
+- **Recharts**: Charting library for rendering graphs and data visualizations
+- **React Dropzone**: Drag-and-drop file upload component
+- **NextAuth v5 (beta)**: Authentication with OAuth and credentials
+- **Slugify**: Converts text to URL-friendly slugs
+
+## Features
+
+- NextAuth v5 authentication
+- Admin dashboard for management, with statistics
+- Order, product, user, attributes, and categories management
+- User area with profile and order history
+- Stripe API integration
+- Cash on delivery option
+- Checkout process
+- Promotional banner
+- Support multiple images using Uploadthing
+- Ratings and reviews system
+- Search form for customer and admin
+- Filtering
+- Pagination
+- Dark/Light/System mode
+- Variable and simple products
+- Price and sale price support
+
+## Environment Variables
+
+Create an `.env` and add the necessary environment variables:
+
+```
+NEXT_PUBLIC_APP_NAME=
+NEXT_PUBLIC_APP_DESCRIPTION=
+NEXT_PUBLIC_SERVER_URL=
+
+LATEST_PRODUCTS_LIMIT=
+
+ENCRYPTION_KEY=
+
+DATABASE_URL=
+
+NEXTAUTH_URL=
+NEXTAUTH_URL_INTERNAL=
+NEXTAUTH_SECRET=
+
+UPLOADTHING_TOKEN=
+UPLOADTHING_SECRET=
+UPLOADTHING_APPID=
+
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## User Screens
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Demos
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**User**
 
-## Learn More
+- [User Overview](https://drive.google.com/file/d/1TGthfESeuFvq73cPmuyRSBZCLbSUImRA/view?usp=sharing)
 
-To learn more about Next.js, take a look at the following resources:
+**Admin**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [Admin Dashboard Overview](https://drive.google.com/file/d/19sznjwv-VJ0I_6RoJZNQOfMI4_lyE3os/view?usp=drive_link)
+- [Create Attribute](https://drive.google.com/file/d/1SuWKSUA-_QCTsGyR_eed9pGFasgwN3AE/view?usp=sharing)
+- [Create Product](https://drive.google.com/file/d/19U6pwAIYjIOygVd0Ga1fr7LXMyWIW2QP/view?usp=drive_link)
+- [Update Product Variant](https://drive.google.com/file/d/1DHPA4punuz-428XuUGf5XdhD-L5PDa2V/view?usp=drive_link)
